@@ -69,39 +69,44 @@ controller.hears(['//gist.github.com/(.*)/(.*)>', '//mjml.io/(.*)/(.*)>'], 'dire
         emails = [
             response.user.profile.email
         ];
-    });
 
-    var user = message.match[1];
-    var gistId = message.match[2];
-    // bot.botkit.debug(message.match, user, gistId);
+        var user = message.match[1];
+        var gistId = message.match[2];
+        // bot.botkit.debug(message.match, user, gistId);
 
-    // Parse MJML.io urls
-    if ('try-it-live' == user) {
-        user = 'mjml-tryitlive';
-    }
-
-    var gist = new Gisty({
-        username: user
-    });
-
-    gist.fetch(gistId, function(error, gist) {
-        if (error) {
-            bot.reply(message, 'Did not get that..');
-            return;
+        // Parse MJML.io urls
+        if ('try-it-live' == user) {
+            user = 'mjml-tryitlive';
         }
 
-        bot.reply(message, 'Here\'s a list of the files:');
-        for (filename in gist.files) {
-            var gistContent = gist.files[filename].content;
+        var gist = new Gisty({
+            username: user
+        });
 
-            // renderMjml(gistContent, function(err, httpResponse, body) {
-            //     bot.reply(message, '```' + body.html.substring(0,99) + '...' + '```');
-            // });
+        gist.fetch(gistId, function(error, gist) {
+            if (error) {
+                bot.reply(message, 'Did not get that..');
+                return;
+            }
 
-            sendMjml(gistContent, emails, function(err, httpResponse, body) {
-                bot.reply(message, 'The rendered MJML from file: *' + filename + '* will be sent to: ' + emails.join());
-            });
-        }
+            for (filename in gist.files) {
+                var gistContent = gist.files[filename].content;
+
+                // renderMjml(gistContent, function(err, httpResponse, body) {
+                //     bot.reply(message, '```' + body.html.substring(0,99) + '...' + '```');
+                // });
+
+                sendMjml(gistContent, emails, function(err, httpResponse, body) {
+                    if (200 != httpResponse.statusCode) {
+                        bot.botkit.debug('Render API error:', err, httpResponse.statusCode, body);
+                        bot.reply(message, 'I\'ve received bad response from the Render API: ' + httpResponse.statusCode);
+                        return;
+                    }
+                    bot.reply(message, 'The rendered MJML from file: *' + filename + '* will be sent to: ' + emails.join());
+                });
+            }
+        });
+
     });
 });
 
