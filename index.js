@@ -61,7 +61,7 @@ controller.hears(['sample'], 'direct_message,direct_mention,mention', function(b
     bot.reply(message, mjml);
 });
 
-controller.hears(['//gist.github.com'], 'direct_message,direct_mention,mention', function(bot, message) {
+controller.hears(['//gist.github.com/(.*)/(.*)>', '//mjml.io/(.*)/(.*)>'], 'direct_message,direct_mention,mention', function(bot, message) {
 
     var Gisty = require('gisty');
     var emails = [];
@@ -71,11 +71,14 @@ controller.hears(['//gist.github.com'], 'direct_message,direct_mention,mention',
         ];
     });
 
-    var cleanUrl = message.text.replace('<', '').replace('>', '');
-    var userUrl = Url.parse(cleanUrl);
-    var parts = userUrl.path.split('/');
-    var user = parts[1];
-    var gistId = parts[2];
+    var user = message.match[1];
+    var gistId = message.match[2];
+    // bot.botkit.debug(message.match, user, gistId);
+
+    // Parse MJML.io urls
+    if ('try-it-live' == user) {
+        user = 'mjml-tryitlive';
+    }
 
     var gist = new Gisty({
         username: user
