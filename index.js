@@ -14,6 +14,7 @@ if (!debug) {
     debug = false;
 }
 
+var http = require('http');
 var Botkit = require('botkit');
 var Url = require('url');
 var request = require('request');
@@ -28,6 +29,17 @@ var bot = controller.spawn({
 }).startRTM();
 
 
+// We need a function which handles requests and send response
+function handleRequest(request, response) {
+    response.end('MJML Slack Bot is online!');
+}
+// Create a server
+var server = http.createServer(handleRequest);
+// Lets start our server
+var PORT = process.env.PORT || 5000;
+server.listen(PORT, function() {
+    console.log("Server listening on: http://localhost:%s", PORT);
+});
 
 controller.hears(['help'], 'direct_message,direct_mention,mention', function(bot, message) {
     bot.reply(message, 'Send me an gist containing MJML markup and I\'ll render it.');
