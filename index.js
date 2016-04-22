@@ -61,8 +61,6 @@ controller.hears(['//gist.github.com'], 'direct_message,direct_mention,mention',
 
     var cleanUrl = message.text.replace('<', '').replace('>', '');
     var userUrl = Url.parse(cleanUrl);
-    bot.reply(message, message.text);
-
     var parts = userUrl.path.split('/');
     var user = parts[1];
     var gistId = parts[2];
