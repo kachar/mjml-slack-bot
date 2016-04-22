@@ -1,0 +1,29 @@
+{
+  "name": "mjml-slack-bot",
+  "version": "1.0.0",
+  "description": "MJML Slack Bot",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/kachar/mjml-slack-bot"
+  },
+  "keywords": [
+    "slack",
+    "bot",
+    "mjml"
+  ],
+  "author": "Ilko Kacharov",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/kachar/mjml-slack-bot/issues"
+  },
+  "homepage": "https://github.com/kachar/mjml-slack-bot",
+  "dependencies": {
+    "botkit": "^0.1.1",
+    "gisty": "^0.1.5",
+    "request": "^2.72.0"
+  }
+}
